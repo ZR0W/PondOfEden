@@ -40,15 +40,22 @@ public class Creature {
     will reject, return false, if approacher MV is lower than own SPMV
     what interaction should occur to SPMV when approached by a creature of a MV lower than the creature's own SPMV?
      */
-    public boolean beApproached(Creature c) {
+    public boolean beApproachedBy(Creature c) {
         if(c.getMV() > getSPMV()) {
             //accept
-            SPMV += (c.getMV()-getSPMV())*0.1;
+            mateSuccessfully(c);
             return true;
         }else{
             //reject
             return false;
         }
+    }
+
+    /*
+    call this function to mate successfully with creature
+     */
+    public void mateSuccessfully(Creature c) {
+        SPMV += (c.getMV()-getSPMV())*0.1;
     }
 
 
