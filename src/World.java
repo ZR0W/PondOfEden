@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 public class World {
 
@@ -25,7 +26,7 @@ public class World {
         Random random = new Random();
         for(int i = 0; i < numCreatures; i++) {
             //width of the bell curve is 2.355 times standard deviation
-            //nextGuassian * standard deviation + mean
+            //nextGuassian() * standard deviation + mean
             Creature c = new Creature(Math.max(Math.min(random.nextGaussian()*2 + 5.0, 10), 0));
 
             c.setLocation(random.nextInt(width), random.nextInt(length));
@@ -92,8 +93,8 @@ public class World {
         for(Creature c : creatures) {
             statRecord.addEntry(c, null, false, c.getMV(), c.getSPMV());
         }
-        int cycles = 200;
-        for(int i = 0; i < cycles; i++) {
+        int epoch = 200;
+        for(int i = 0; i < epoch; i++) {
             //for every creature give them a partner
             //A will make a decision on if it wants to mate. B will accept or not
             for(Creature foo : creatures) {
@@ -101,8 +102,38 @@ public class World {
                 boolean result = world.interact(foo, pursuingTarget);
                 statRecord.addEntry(foo, pursuingTarget, result, foo.getMV(), foo.getSPMV());
             }
-            System.out.println("cycle " + i + " =============================");
+            System.out.println("epoch " + i + " =============================");
             world.getStats();
         }
+
+        //query the result with console
+        Scanner in = new Scanner(System.in);
+        System.out.print("Enter creature history query: ");
+        String consoleIn = in.nextLine();
+        String exitCode = "exit()";
+        while(!consoleIn.equals(exitCode)) {
+            //parse query
+            String[] inputArgs = consoleIn.split("\\s+");
+            if(inputArgs.length != 2){
+                System.out.println("Error input length: " + inputArgs.length);
+            }else{
+                int creatureIndex = Integer.valueOf(inputArgs[0]);
+                String operation = inputArgs[1];
+                switch(operation.toLowerCase()) {
+                    case "mv":
+                        System.out.println(creatures.get(creatureIndex).getMV());
+                        break;
+                    case "spmv":
+                        System.out.println(statRecord.getSPMVHistory(creatures.get(creatureIndex)));
+                        break;
+                    default:
+                        System.out.println("default operation");
+                }
+            }
+            //query again to restart the process
+            System.out.print("Query: ");
+            consoleIn = in.nextLine();
+        }
+        System.exit(0);
     }
 }

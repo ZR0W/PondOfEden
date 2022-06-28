@@ -22,6 +22,16 @@ public class StatRecord {
         }
     }
 
+    public String getSPMVHistory(Creature c) {
+        History h = creatureHistories.get(c);
+        Double[] d = h.getSPMVLog();
+        String[] s = new String[d.length];
+        for(int i = 0; i < d.length; i++) {
+            s[i] = String.valueOf(d[i]);
+        }
+        return String.join(", ", s);
+    }
+
     private class History {
 
         ArrayList<Record> allRecords;
@@ -31,6 +41,15 @@ public class StatRecord {
 
         public void addRecord(Creature approached, boolean isSuccessful, Double MV, Double SPMV) {
             allRecords.add(new Record(approached, isSuccessful, MV, SPMV));
+        }
+
+        public Double[] getSPMVLog() {
+            Double[] out = new Double[allRecords.size()];
+            for(int i = 0; i < allRecords.size(); i++) {
+                Double spmv = allRecords.get(i).SPMV;
+                out[i] = spmv;
+            }
+            return out;
         }
     }
 
