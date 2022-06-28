@@ -33,7 +33,13 @@ perhaps start the self value of every creature at max? since only a decrease mec
 
 ### OOP design diagram
 ```mermaid
-graph TD;
-  a-->b;
-  a-->c;
+classDiagram
+World : ArrayList<Creature>
+World : interact(Creature A, B)
+World : findPotentialMate(Creature A)
+Creature : Double Self-percieved mate value
+Creature : Double Mate value
+Creature : getRejectedBy(Creature B)
+Creature : beApproachedBy(Creature A)
+Creature : mateSuccessfully(Creature B)
 ```
