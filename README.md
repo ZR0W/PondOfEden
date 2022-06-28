@@ -32,11 +32,14 @@ every creature starts with a self percieved value of itself. It goes out to find
 perhaps start the self value of every creature at max? since only a decrease mechanic is introduced currently. 
 
 ### OOP design diagram
+
 ```mermaid
 classDiagram
+class World
 World : ArrayList<Creature>
 World : interact(Creature A, B)
 World : findPotentialMate(Creature A)
+class Creature
 Creature : Double Self-percieved mate value
 Creature : Double Mate value
 Creature : getRejectedBy(Creature B)
