@@ -2,9 +2,14 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.statistics.HistogramDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,19 +40,26 @@ public class ChartTest {
             System.out.println("epoch " + i + " =============================");
             world.getStats();
         }
-        //JFreeChart display
-        double[] populationSPMVAtTime = new double[creatures.size()];
-        int time = 50;
-        for(int i = 0; i < creatures.size(); i++) {
-            Double spmv = statRecord.getSPMVHistoryAtTime(creatures.get(i), time);
-            populationSPMVAtTime[i] = spmv.doubleValue();
-        }
 
-        //TODO: histogram isn't the best option; maybe scatter plot? Maybe price volume chart, whatever that is?
+        //JFreeChart display
         //Create JFreeChart to display data
-        HistogramDataset dataset = new HistogramDataset();
-        dataset.addSeries("key", populationSPMVAtTime, 20);
-        JFreeChart histogram = ChartFactory.createHistogram("JFreeChart Historgram from ChartTest.java", "Creature", "SPMV", dataset);
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        XYSeries series10 = new XYSeries("cycle10");
+        for(int i = 0; i < creatures.size(); i++) {
+            Double mv = creatures.get(i).getMV();
+            Double spmv = statRecord.getSPMVHistoryAtTime(creatures.get(i), 10);
+            series10.add(mv, spmv);
+        }
+        dataset.addSeries(series10);
+        //another data series for comparison
+        XYSeries series200 = new XYSeries("cycle200");
+        for(int i = 0; i < creatures.size(); i++) {
+            Double mv = creatures.get(i).getMV();
+            Double spmv = statRecord.getSPMVHistoryAtTime(creatures.get(i), 200);
+            series200.add(mv, spmv);
+        }
+        dataset.addSeries(series200);
+        JFreeChart scatter = ChartFactory.createScatterPlot("MV vs SPMV Scatter plot", "MV", "SPMV", dataset);
 //        ChartUtils.saveChartAsPNG(new File("C://Users/CodersLegacy/Desktop/histogram.png"), histogram, 600, 400);
 
         //Java UI to display graph
@@ -56,11 +68,13 @@ public class ChartTest {
             public void run() {
                 JFrame frame = new JFrame("chart");
 
-                frame.setSize(600, 600);
+                frame.setSize(700, 700);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setVisible(true);
 
-                ChartPanel cp = new ChartPanel(histogram);
+                XYPlot plot = (XYPlot)scatter.getPlot();
+                plot.setBackgroundPaint(new Color(250, 200, 200));
+                ChartPanel cp = new ChartPanel(scatter);
 
                 frame.getContentPane().add(cp);
             }
