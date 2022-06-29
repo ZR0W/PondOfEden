@@ -22,14 +22,14 @@ public class StatRecord {
         }
     }
 
-    public String getSPMVHistory(Creature c) {
+    public Double[] getSPMVHistory(Creature c) {
         History h = creatureHistories.get(c);
         Double[] d = h.getSPMVLog();
-        String[] s = new String[d.length];
-        for(int i = 0; i < d.length; i++) {
-            s[i] = String.valueOf(d[i]);
-        }
-        return String.join(", ", s);
+        return d;
+    }
+
+    public Double getSPMVHistoryAtTime(Creature c, int time) {
+        return getSPMVHistory(c)[time];
     }
 
     private class History {
@@ -46,10 +46,13 @@ public class StatRecord {
         public Double[] getSPMVLog() {
             Double[] out = new Double[allRecords.size()];
             for(int i = 0; i < allRecords.size(); i++) {
-                Double spmv = allRecords.get(i).SPMV;
-                out[i] = spmv;
+                out[i] = getSPMVAtTime(i);
             }
             return out;
+        }
+
+        public Double getSPMVAtTime(int time) {
+            return allRecords.get(time).SPMV;
         }
     }
 

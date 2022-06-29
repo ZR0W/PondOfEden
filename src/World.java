@@ -49,11 +49,7 @@ public class World {
         return creatures;
     }
 
-    private int[] getPotentialMates(int numMates) {
-        return new int[]{1,2,3};
-    }
-
-    private Creature getPotentialMateFor(Creature c) {
+    public Creature getPotentialMateFor(Creature c) {
         int randomIndex = -1;
         do {
             randomIndex = new Random().nextInt(creatures.size());
@@ -62,7 +58,7 @@ public class World {
         return creatures.get(randomIndex);
     }
 
-    private boolean interact(Creature A, Creature B) {
+    public boolean interact(Creature A, Creature B) {
         //A is approaching B
         if(!B.beApproachedBy(A)) {
             A.getRejected(B);
@@ -75,7 +71,7 @@ public class World {
     /*
     console print all SPMV
      */
-    private void getStats() {
+    public void getStats() {
         for(int i = 0; i < creatures.size(); i++) {
             Creature c = creatures.get(i);
             Double mv = c.getMV();
@@ -124,7 +120,12 @@ public class World {
                         System.out.println(creatures.get(creatureIndex).getMV());
                         break;
                     case "spmv":
-                        System.out.println(statRecord.getSPMVHistory(creatures.get(creatureIndex)));
+                        Double[] d = statRecord.getSPMVHistory(creatures.get(creatureIndex));
+                        String[] s = new String[d.length];
+                        for(int i = 0; i < d.length; i++) {
+                            s[i] = String.valueOf(d[i]);
+                        }
+                        System.out.println(String.join(", ", s));
                         break;
                     default:
                         System.out.println("default operation");
