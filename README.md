@@ -32,3 +32,6 @@ Creature : mateSuccessfully(Creature B)
 ### Desired features
 - trace the behavior of a single creature and it's MV and SPMV vlues changes
 - watch the population's overall difference between their MV and SPMV, theoretically, decrease
+
+### Recources
+- [JFreeChart](https://www.jfree.org/jfreechart/)
