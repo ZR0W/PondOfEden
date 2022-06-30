@@ -4,8 +4,8 @@ simulator of small creatures with simple behavior
 ### Scratch Pad
 Simulating mating behavior
 specifically how people of similar desireability pair up with eachother
-
-Exact scienctific term to be decided, but assortative mating is a similar enough topic at hand. Steming from experiment where participants assigned a number they cannot see true to pair with other participants with numbers they can see and find ones as high as possible.
+The "Pairing Game"
+Experiment where participants assigned a number they cannot see true to pair with other participants with numbers they can see and find ones as high as possible.
 
 introduce some values such as mate value and self-percieved mate value.
 
