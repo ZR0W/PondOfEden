@@ -2,7 +2,9 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.Value;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -10,6 +12,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,23 +47,14 @@ public class ChartTest {
         //JFreeChart display
         //Create JFreeChart to display data
         XYSeriesCollection dataset = new XYSeriesCollection();
-        XYSeries series10 = new XYSeries("cycle10");
+        XYSeries dataSeries = new XYSeries("cycle");
         for(int i = 0; i < creatures.size(); i++) {
             Double mv = creatures.get(i).getMV();
-            Double spmv = statRecord.getSPMVHistoryAtTime(creatures.get(i), 10);
-            series10.add(mv, spmv);
+            Double spmv = statRecord.getSPMVHistoryAtTime(creatures.get(i), 0);
+            dataSeries.add(mv, spmv);
         }
-        dataset.addSeries(series10);
-        //another data series for comparison
-        XYSeries series200 = new XYSeries("cycle200");
-        for(int i = 0; i < creatures.size(); i++) {
-            Double mv = creatures.get(i).getMV();
-            Double spmv = statRecord.getSPMVHistoryAtTime(creatures.get(i), 200);
-            series200.add(mv, spmv);
-        }
-        dataset.addSeries(series200);
+        dataset.addSeries(dataSeries);
         JFreeChart scatter = ChartFactory.createScatterPlot("MV vs SPMV Scatter plot", "MV", "SPMV", dataset);
-//        ChartUtils.saveChartAsPNG(new File("C://Users/CodersLegacy/Desktop/histogram.png"), histogram, 600, 400);
 
         //Java UI to display graph
         SwingUtilities.invokeLater(new Runnable() {
@@ -74,9 +68,39 @@ public class ChartTest {
 
                 XYPlot plot = (XYPlot)scatter.getPlot();
                 plot.setBackgroundPaint(new Color(250, 200, 200));
+                ValueAxis domainAxis = plot.getDomainAxis();
+                ValueAxis rangeAxis = plot.getRangeAxis();
+                domainAxis.setRange(0.0, 10.0);
+                rangeAxis.setRange(0.0, 10.0);
                 ChartPanel cp = new ChartPanel(scatter);
 
-                frame.getContentPane().add(cp);
+                frame.getContentPane().add(cp, BorderLayout.CENTER);
+
+                //add button
+                JPanel controlPanel = new JPanel();
+
+                JTextField textField = new JTextField(5);
+                textField.setText("0");
+                controlPanel.add(textField, BorderLayout.WEST);
+                controlPanel.add(new JButton(new AbstractAction("Next") {
+                    int activeCycle = 0;
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        dataSeries.clear();
+                        if(!textField.getText().equals(String.valueOf(activeCycle))) {
+                            activeCycle = Integer.valueOf(textField.getText());
+                        }else{
+                            activeCycle++;
+                        }
+                        textField.setText(String.valueOf(activeCycle));
+                        for(int i = 0; i < creatures.size(); i++) {
+                            Double mv = creatures.get(i).getMV();
+                            Double spmv = statRecord.getSPMVHistoryAtTime(creatures.get(i), activeCycle);
+                            dataSeries.add(mv, spmv);
+                        }
+                    }
+                }));
+                frame.getContentPane().add(controlPanel, BorderLayout.EAST);
             }
         });
     }
